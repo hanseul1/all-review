@@ -1,0 +1,29 @@
+# Eclipse
+.DS_STORE
+.classpath
+.settings/
+.project
+
+# Intellij
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Mac
+.DS_Store
+
+# Gradle
+.gradle/
+log/
+build/
+
+# Java
+*.class
+
+#classes
+classes/
+
+# properties
+application-oauth.properties
