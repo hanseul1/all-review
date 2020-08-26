@@ -25,13 +25,13 @@ public class Review extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private Long memberId;
+    private Long userId;
 
     @Builder
-    public Review(String title, String content, Long memberId) {
+    public Review(String title, String content, Long userId) {
         this.title = title;
         this.content = content;
-        this.memberId = memberId;
+        this.userId = userId;
     }
 
     public void update(String title, String content) {

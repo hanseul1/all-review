@@ -11,20 +11,20 @@ public class ReviewRequestDto {
 
     private String title;
     private String content;
-    private Long memberId;
+    private Long userId;
 
     @Builder
-    public ReviewRequestDto(String title, String content, Long memberId) {
+    public ReviewRequestDto(String title, String content, Long userId) {
         this.title = title;
         this.content = content;
-        this.memberId = memberId;
+        this.userId = userId;
     }
 
     public Review toEntity() {
         return Review.builder()
           .title(title)
           .content(content)
-          .memberId(memberId)
+          .userId(userId)
           .build();
     }
 }

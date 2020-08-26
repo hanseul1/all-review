@@ -30,7 +30,7 @@ public class ReviewRepositoryTest {
         reviewRepository.save(Review.builder()
         .title("title")
         .content("content")
-        .memberId(1L)
+        .userId(1L)
         .build());
 
         // when
@@ -40,6 +40,6 @@ public class ReviewRepositoryTest {
         Review review = reviewList.get(0);
         assertThat(review.getTitle(), is("title"));
         assertThat(review.getContent(), is("content"));
-        assertThat(review.getMemberId(), is(1L));
+        assertThat(review.getUserId(), is(1L));
     }
 }
