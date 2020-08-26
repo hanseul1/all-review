@@ -43,12 +43,12 @@ public class ReviewControllerTest {
         // given
         String title = "title";
         String content = "content";
-        Long memberId = 1L;
+        Long userId = 1L;
 
         ReviewRequestDto requestDto = ReviewRequestDto.builder()
           .title(title)
           .content(content)
-          .memberId(memberId)
+          .userId(userId)
           .build();
 
         String url = LOCALHOST_URL_PREFIX + port + "/api/v1/reviews";
@@ -63,7 +63,7 @@ public class ReviewControllerTest {
         List<Review> reviewList = reviewRepository.findAll();
         assertThat(reviewList.get(0).getTitle()).isEqualTo(title);
         assertThat(reviewList.get(0).getContent()).isEqualTo(content);
-        assertThat(reviewList.get(0).getMemberId()).isEqualTo(memberId);
+        assertThat(reviewList.get(0).getUserId()).isEqualTo(userId);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class ReviewControllerTest {
         Review review = reviewRepository.save(Review.builder()
         .title("title")
         .content("content")
-        .memberId(1L)
+        .userId(1L)
         .build());
 
         Long reviewId = review.getId();

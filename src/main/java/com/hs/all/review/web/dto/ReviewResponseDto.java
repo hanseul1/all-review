@@ -9,12 +9,12 @@ public class ReviewResponseDto {
     private Long id;
     private String title;
     private String content;
-    private Long memberId;
+    private Long userId;
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
         this.title = review.getTitle();
         this.content = review.getContent();
-        this.memberId = review.getMemberId();
+        this.userId = review.getUserId();
     }
 }
