@@ -1,22 +1,29 @@
 package com.hs.all.review.web.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hs.all.review.domain.entity.Review;
 import com.hs.all.review.domain.repository.ReviewRepository;
 import com.hs.all.review.web.dto.ReviewRequestDto;
 import java.util.List;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -28,10 +35,19 @@ public class ReviewControllerTest {
     private int port;
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private ReviewRepository reviewRepository;
 
     @Autowired
-    private ReviewRepository reviewRepository;
+    private WebApplicationContext context;
+
+    private MockMvc mvc;
+
+    @Before
+    public void setup() {
+        mvc = MockMvcBuilders.webAppContextSetup(context)
+        .apply(springSecurity())
+        .build();
+    }
 
     @After
     public void cleanUp() throws Exception {
@@ -39,6 +55,7 @@ public class ReviewControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void save_review() throws Exception {
         // given
         String title = "title";
@@ -54,12 +71,13 @@ public class ReviewControllerTest {
         String url = LOCALHOST_URL_PREFIX + port + "/api/v1/reviews";
 
         // when
-        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+        mvc.perform(post(url)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(new ObjectMapper().writeValueAsString(requestDto)))
+           .andExpect(status().isOk());
+
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isGreaterThan(0L);
-
         List<Review> reviewList = reviewRepository.findAll();
         assertThat(reviewList.get(0).getTitle()).isEqualTo(title);
         assertThat(reviewList.get(0).getContent()).isEqualTo(content);
@@ -67,6 +85,7 @@ public class ReviewControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void update_review() throws Exception {
         // given
         Review review = reviewRepository.save(Review.builder()
@@ -87,12 +106,12 @@ public class ReviewControllerTest {
         String url = LOCALHOST_URL_PREFIX + port + "/api/v1/reviews/" + reviewId;
 
         // when
-        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+        mvc.perform(post(url)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(new ObjectMapper().writeValueAsString(requestDto)))
+           .andExpect(status().isOk());
 
         // then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isGreaterThan(0L);
-
         List<Review> reviewList = reviewRepository.findAll();
         assertThat(reviewList.get(0).getTitle()).isEqualTo(updatedTitle);
         assertThat(reviewList.get(0).getContent()).isEqualTo(updatedContent);
