@@ -23,7 +23,7 @@ fi
 
 echo "> New Application Deployment"
 
-JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
+JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1 | awk -F'/' '{print $6}')
 
 echo "> Jar Name : $JAR_NAME"
 
